@@ -2,7 +2,8 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
-import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo  # For Python 3.9 and above
 
 # --- Apply Bruins Gold Accents with Lighter Background ---
 
@@ -186,6 +187,10 @@ end_season = st.sidebar.selectbox("End Season", seasons, index=len(seasons)-1)
 season_filter = (df['Season'] >= start_season) & (df['Season'] <= end_season)
 df_filtered = df[season_filter].reset_index(drop=True)
 
+# --- Specify the Timezone ---
+# Replace 'America/New_York' with your desired timezone
+tz = ZoneInfo('America/New_York')
+
 # --- Functions for data analysis ---
 
 # Functions now accept the DataFrame as a parameter
@@ -266,7 +271,10 @@ st.markdown(f"""
 st.write(f"Displaying results for seasons {start_season} to {end_season}")
 
 # --- Today's Date and Record ---
-today = datetime.date.today()
+
+# Get the current date and time in the specified timezone
+now = datetime.now(tz)
+today = now.date()
 today_mm_dd = today.strftime('%m-%d')
 today_day_name = today.strftime('%A')
 
@@ -454,4 +462,4 @@ fig2.update_layout(
 )
 st.plotly_chart(fig2, use_container_width=True)
 
-st.write("Data provided by Hockey Reference.")
+st.write("Data provided by [Hockey-Reference.com](https://www.hockey-reference.com/teams/BOS/2021_games.html)")
